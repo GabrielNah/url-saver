@@ -1,1 +1,3 @@
-alert("hello")
+document.addEventListener('DOMContentLoaded', function() {
+
+});

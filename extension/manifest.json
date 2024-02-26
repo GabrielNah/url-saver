@@ -7,5 +7,8 @@
     "matches": ["<all_urls>"],
     "js": ["urlSaver.js"],
     "css": ["styles.css"]
-  }]
+  }],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
