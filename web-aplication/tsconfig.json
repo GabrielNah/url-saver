@@ -13,7 +13,8 @@
         "isolatedModules": true,
         "baseUrl": "./",
         "paths": {
-            "@/*": ["./resources/js/Components"]
+            "@/*": ["./resources/js/Components"],
+            "@utils/*": ["./resources/js/utils"],
         }
     },
     "include": ["resources/js/**/*"],

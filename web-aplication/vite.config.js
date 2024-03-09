@@ -4,7 +4,7 @@ import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react'
 
 const root = resolve(__dirname,"resources/js")
-console.log(resolve(root,"Components"))
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -16,7 +16,8 @@ export default defineConfig({
     base:"/",
     resolve:{
         alias:{
-            "@":resolve(root,"Components")
+            "@":resolve(root,"Components"),
+            "@utils":resolve(root,"utils"),
         }
     }
 });
