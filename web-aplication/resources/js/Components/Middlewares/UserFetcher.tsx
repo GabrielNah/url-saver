@@ -1,40 +1,41 @@
 import React, { useLayoutEffect, useRef, useState} from 'react';
 import $http from "@utils/$http"
 import {AxiosResponse} from "axios";
-import {Outlet, useLocation} from "react-router-dom";
+import {Await, defer, Outlet, useLoaderData, useLocation} from "react-router-dom";
 import {UserType} from "@js/Types";
 
 
+const getUser = async ()=>{
+    try{
+        let {data:{user}}:AxiosResponse<{ user: UserType }> = await $http.instance().get("/me")
+        return user
+    }catch (e){
+        return null
+    }
+}
+export const FetchUser = ()=>{
+   return defer({
+       user:getUser()
+   })
+}
+
 const UserFetcher = () => {
 
-    let [fetching,setFetching] = useState(true)
-    let User = useRef<UserType | null>(null)
-    const { pathname } = useLocation();
+    const {user} = useLoaderData<{user:UserType | null}>()
 
-    useLayoutEffect(()=>{
-
-        setFetching(true)
-
-        Promise.all(
-            [$http.instance().get("/me")
-                .then(({data: {user}}: AxiosResponse<{ user: UserType }>) => {
-                    if (!user) {
-                        throw new Error("Something went wrong.");
-                    }
-
-                    User.current = user
-                })
-                .catch((e) => {
-                    User.current = null
-                })
-            ])
-            .then(() => setFetching(false))
-
-    },[pathname])
-    //TODO  optimize navigation
 
     return (
-        fetching ? "fetching" : <Outlet context={{user:User.current}}/>
+        <React.Suspense
+            fallback={<p>Loading...</p>}
+        >
+            <Await
+                resolve={user}
+            >
+                {(user) => (
+                    <Outlet context={{user:user}}/>
+                )}
+            </Await>
+        </React.Suspense>
     );
 };
 

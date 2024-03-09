@@ -34,6 +34,9 @@ const AuthLayout = () => {
                             <button onClick={logout}>
                                 Log out
                             </button>
+                            <button onClick={()=>navigateTO("/login")}>
+                                Log out
+                            </button>
                         </div>
                         <Outlet context={{user:user}} />
                     </div>
