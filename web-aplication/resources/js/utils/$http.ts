@@ -6,6 +6,7 @@ type Service = {
     reInit:()=>Service,
     instance:()=>AxiosInstance
 }
+
 export default {
     axiosInstance:null,
     reInit(){

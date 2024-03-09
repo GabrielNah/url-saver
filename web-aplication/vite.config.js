@@ -18,6 +18,7 @@ export default defineConfig({
         alias:{
             "@":resolve(root,"Components"),
             "@utils":resolve(root,"utils"),
+            "@js":root,
         }
     }
 });
