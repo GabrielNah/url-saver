@@ -2,6 +2,7 @@ import React, {FormEvent} from 'react';
 import $http from "@utils/$http"
 import {AxiosResponse} from "axios";
 import {setAccessToken} from "../utils/AuthService";
+import {useNavigate} from "react-router-dom";
 
 type Credentials = {
     email:string,
@@ -30,12 +31,15 @@ const Register = () => {
         password_confirmation:"",
     })
 
+    const navigate = useNavigate()
+
     const register = (e:FormEvent)=>{
         e.preventDefault();
 
         $http.instance().post("/register",credentials).then(({data:{token}}:AxiosResponse<{token:string}>)=>{
             setAccessToken(token)
             $http.reInit()
+            navigate("/dashboard")
         })
     }
 

@@ -31,10 +31,7 @@ const AuthLayout = () => {
                 <Show.Else>
                     <div>
                         <div>
-                            <button onClick={logout}>
-                                Log out
-                            </button>
-                            <button onClick={()=>navigateTO("/login")}>
+                            <button  className={"btn "} onClick={logout}>
                                 Log out
                             </button>
                         </div>
