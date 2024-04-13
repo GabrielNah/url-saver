@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
 import $http from "@utils/$http"
 import {AxiosResponse} from "axios";
 import {Collection} from "../../../Types";
@@ -48,7 +48,7 @@ const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProp
 }
 
 
-const Collections = () => {
+const Collections = forwardRef((props,ref) => {
 
     const [collections,setCollections]=useState<Collection[]>([])
 
@@ -57,15 +57,26 @@ const Collections = () => {
        return  $http.instance().post(`/collection/${id}/make-default`)
     }
 
-    useEffect(()=>{
+    const fetchCollections = ()=>{
         $http.instance().get("/collection")
             .then(({data}:AxiosResponse<{collections:Collection[]}>)=>{
                 setCollections(data.collections)
             })
+    }
+
+    useEffect(()=>{
+        fetchCollections()
     },[])
 
+
+    useImperativeHandle(ref,()=>{
+        return {
+            fetchCollections
+        }
+    },[setCollections])
+
     return (
-        <div className={"w-full flex flex-col"}>
+        <div className={"w-full flex flex-col"} ref={ref}>
 
             <div className={"w-full flex flex-wrap gap-3"}>
                 <Each collection={collections}
@@ -76,6 +87,6 @@ const Collections = () => {
         </div>
 
     );
-};
+});
 
 export default Collections;

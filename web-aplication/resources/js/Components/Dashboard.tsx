@@ -1,37 +1,41 @@
 import React, {useRef, useState} from 'react';
-import useAuthContext from "../customHooks/useAuthContext";
 import Collections from "@/Partials/Dashboard/Collections";
 import Button from "./Toolkit/Button";
 import Modal from "./Toolkit/Modal";
 import $http from "@utils/$http"
+import Input from "./Toolkit/Input";
+import Textarea from "./Toolkit/Textarea";
 
 
-const AddCollection = ()=>{
+const AddCollection = ({refetch}) => {
     const modal = useRef()
-    const [name,setName]=useState<string>("")
-    const [description,setDescription]=useState<string>("")
-    const onSubmit = (e)=>{
-        e.preventDefault();
+    const [name, setName] = useState<string>("")
+    const [description, setDescription] = useState<string>("")
 
-        $http.instance().post("/collection/store",{
-            name,description
+    const onSubmit = (e) => {
+
+        e.preventDefault();
+        $http.instance().post("/collection/store", {
+            name, description
         })
-            .then(()=>{
-                modal.current.close()
-            })
+        .then(() => {
+            modal.current.close()
+            refetch()
+        })
     }
     return (
         <>
-            <Button type={"button"} onClick={()=>{
-                modal.current.open()
-            }}  disabled={false}>
+            <Button
+                onClick={() => {
+                    modal.current.open()
+                }}>
                 Add New
             </Button>
             <Modal ref={modal}>
-                <form onSubmit={onSubmit}>
-                    <input  value={name} onChange={e=>setName(e.target.value??"")}/>
-                    <input value={description} onChange={e=>setDescription(e.target.value??"")}/>
-                    <Button type={"submit"} >
+                <form onSubmit={onSubmit} className={"flex flex-col gap-2"}>
+                    <Input value={name} onChange={e => setName(e.target.value ?? "")} className={""}/>
+                    <Textarea value={description} onChange={e => setDescription(e.target.value ?? "")}/>
+                    <Button type={"submit"}>
                         Save
                     </Button>
                 </form>
@@ -41,14 +45,13 @@ const AddCollection = ()=>{
 }
 const Dashboard = () => {
 
-    const user = useAuthContext()
-
+    const collections = useRef<{fetchCollections:()=>void}>()
     return (
         <div className={"p-2 bg-black flex-col"}>
             <div className={"flex w-full justify-end"}>
-            <AddCollection/>
+                <AddCollection refetch={collections.current?.fetchCollections}/>
             </div>
-            <Collections/>
+            <Collections ref={collections}/>
 
         </div>
     );

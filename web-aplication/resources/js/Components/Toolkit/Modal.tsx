@@ -1,6 +1,11 @@
-import React, {forwardRef, PropsWithChildren, useId, useImperativeHandle} from 'react';
+import React, {ForwardedRef, forwardRef, PropsWithChildren, Ref, useId, useImperativeHandle} from 'react';
 
-const Modal = forwardRef(({children},ref) => {
+
+export type Modal = {
+    open:()=>{},
+    close:()=>{},
+}
+const Modal = forwardRef(({children,withCloseButton=true}:PropsWithChildren<{withCloseButton:boolean}>,ref:ForwardedRef<any>) => {
     const id = useId()
 
     useImperativeHandle(ref,()=>{

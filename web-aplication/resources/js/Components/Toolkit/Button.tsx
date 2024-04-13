@@ -2,8 +2,8 @@ import React, {PropsWithChildren} from 'react';
 import classNames from "../../utils/classNames";
 
 type ButtonProps = {
-    type:"button" | "submit",
-    onClick:()=>void,
+    type?:"button" | "submit",
+    onClick?:()=>void,
     className?:string,
     disabled?:boolean
 }
