@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "jsx": "react",
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["./resources/js/Components"],
+            "@utils/*": ["./resources/js/utils"],
+            "@js/*": ["./resources/js"]
+        }
+    },
+    "include": ["resources/js/**/*"],
+    "exclude": ["node_modules", "build", "dist"]
+}

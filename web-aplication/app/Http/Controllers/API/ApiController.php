@@ -14,7 +14,7 @@ abstract class ApiController extends Controller
         );
     }
 
-    public function createdResponse(array $data)
+    public function createdResponse(array $data=[])
     {
         return $this->successResponse($data,Response::HTTP_CREATED);
     }
