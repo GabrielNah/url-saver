@@ -2,7 +2,7 @@ import React, {ChangeEventHandler, forwardRef} from 'react';
 import classNames from "../../utils/classNames";
 
 export type InputProps<T> = {
-    type?:"password"|"text",
+    type?:"password"|"text"|"email",
     placeholder?:string,
     value:string
     onChange:ChangeEventHandler<T>,
