@@ -3,6 +3,7 @@ import $http from "@utils/$http"
 import {AxiosResponse} from "axios";
 import {Await, defer, Outlet, useLoaderData} from "react-router-dom";
 import {UserType} from "@js/Types";
+import PageLoader from "@/Toolkit/PageLoader";
 
 
 const getUser = async ()=>{
@@ -26,7 +27,7 @@ const UserFetcher = () => {
 
     return (
         <React.Suspense
-            fallback={<p>Loading...</p>}
+            fallback={<PageLoader/>}
         >
             <Await
                 resolve={user}

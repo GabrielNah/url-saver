@@ -5,12 +5,15 @@ import Modal from "./Toolkit/Modal";
 import $http from "@utils/$http"
 import Input from "./Toolkit/Input";
 import Textarea from "./Toolkit/Textarea";
+import {DynamicDataProvider, useCustomDataContext} from "./Utils/DynamicDataContext";
+import {Collection} from "../Types";
 
 
-const AddCollection = ({refetch}) => {
+const AddCollection = () => {
     const modal = useRef()
     const [name, setName] = useState<string>("")
     const [description, setDescription] = useState<string>("")
+    const {setLasInsertedCollection} = useCustomDataContext<{setLasInsertedCollection:(C:Collection)=>void}>()
 
     const onSubmit = (e) => {
 
@@ -18,9 +21,9 @@ const AddCollection = ({refetch}) => {
         $http.instance().post("/collection/store", {
             name, description
         })
-        .then(() => {
+        .then(({data: {collection}}) => {
             modal.current.close()
-            refetch()
+            setLasInsertedCollection(collection)
         })
     }
     return (
@@ -45,15 +48,20 @@ const AddCollection = ({refetch}) => {
 }
 const Dashboard = () => {
 
-    const collections = useRef<{fetchCollections:()=>void}>()
-    return (
-        <div className={"p-2 bg-black flex-col"}>
-            <div className={"flex w-full justify-end"}>
-                <AddCollection refetch={collections.current?.fetchCollections}/>
-            </div>
-            <Collections ref={collections}/>
+    const [lastInsertedCollection,setLasInsertedCollection]=useState<Collection|null>(null)
 
-        </div>
+    return (
+        <DynamicDataProvider value={{lastInsertedCollection,setLasInsertedCollection}}>
+
+            <div className={"p-2 bg-black flex-col"}>
+                <div className={"flex w-full justify-end"}>
+                    <AddCollection />
+                </div>
+                <Collections />
+            </div>
+
+        </DynamicDataProvider>
+
     );
 };
 

@@ -36,12 +36,12 @@ class CollectionController extends ApiController
 
     public function store(Request $request)
     {
-        Collection::create([
+        $collection = Collection::create([
             "name"=>$request->input("name"),
             "description" => $request->input("description"),
             "user_id"=>auth()->id()
         ]);
 
-        return $this->createdResponse();
+        return $this->createdResponse(["collection"=> $collection]);
     }
 }

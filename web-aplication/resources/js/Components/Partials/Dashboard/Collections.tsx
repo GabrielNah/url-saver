@@ -6,9 +6,10 @@ import Card from "@/Toolkit/Card";
 import Toggle from "@/Toolkit/Toggle";
 import Label from "@/Toolkit/Label";
 import Each from "@/Utils/Each";
+import {useCustomDataContext} from "../../Utils/DynamicDataContext";
 
 
-const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProps:{markAsDefault}})=>{
+const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProps:{markAsDefault,setCollections}})=>{
 
     const [isChecked,setIsChecked] = useState<boolean>(C.is_default)
     const [processing,setProcessing]=useState<boolean>(false)
@@ -21,9 +22,14 @@ const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProp
         additionalProps.markAsDefault(C.id)
             .then(({data:{success}})=>{
                setProcessing(false)
-               setIsChecked(p=>!p)
+                setIsChecked(true)
+                additionalProps.setCollections(p=>(p.map(c=>({...c,is_default:c.id ==C.id}))))
             })
     }
+
+    useEffect(()=>{
+        setIsChecked(C.is_default)
+    },[C.is_default])
 
     return (
         <Card title={C.name}
@@ -48,9 +54,10 @@ const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProp
 }
 
 
-const Collections = forwardRef((props,ref) => {
+const Collections = (props) => {
 
     const [collections,setCollections]=useState<Collection[]>([])
+    const {lastInsertedCollection} = useCustomDataContext<{lastInsertedCollection:Collection|null}>()
 
 
     const markAsDefault = (id)=>{
@@ -68,25 +75,25 @@ const Collections = forwardRef((props,ref) => {
         fetchCollections()
     },[])
 
-
-    useImperativeHandle(ref,()=>{
-        return {
-            fetchCollections
+    useEffect(()=>{
+        if (lastInsertedCollection){
+            setCollections(p=>([...(p??[]),lastInsertedCollection]))
         }
-    },[setCollections])
+    },[lastInsertedCollection])
+
 
     return (
-        <div className={"w-full flex flex-col"} ref={ref}>
+        <div className={"w-full flex flex-col"}>
 
             <div className={"w-full flex flex-wrap gap-3"}>
                 <Each collection={collections}
                       template={CollectionCard}
-                      propForEachTemplate={{markAsDefault}}
+                      propForEachTemplate={{markAsDefault,setCollections}}
                 />
             </div>
         </div>
 
     );
-});
+};
 
 export default Collections;
