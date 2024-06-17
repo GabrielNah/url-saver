@@ -65,6 +65,72 @@ const AddCollection = () => {
         </>
     )
 }
+
+const EditCollection = ({setCollections,collectionUnderEdition,setCollectionUnderEdition})=>{
+    const [name,setName] = useState<string>(collectionUnderEdition?.name??"")
+    const [description,setDescription] = useState<string>(collectionUnderEdition?.description??"")
+    const modal = useRef()
+
+    const save = (e)=>{
+        e.preventDefault()
+        $http.instance().put(`/collection/${collectionUnderEdition.id}/update`,{
+            name,description
+        })
+            .then(()=>{
+                setCollections((p)=>{
+                    let index = p.findIndex(v=>v.id == collectionUnderEdition.id)
+                    if (index!==-1){
+                        p[index] = {...p[index],name,description}
+                    }
+                    return [...p]
+                })
+                setCollectionUnderEdition(null)
+                closeModal()
+            })
+    }
+
+    const closeModal = ()=>{
+        setDescription("")
+        setName("")
+        modal.current.close()
+    }
+    useEffect(()=>{
+        if (collectionUnderEdition){
+            modal.current.open()
+            setDescription(collectionUnderEdition.description)
+            setName(collectionUnderEdition.name)
+        }else {
+            closeModal()
+        }
+    },[collectionUnderEdition])
+
+    return (
+        <>
+            <Modal ref={modal} withCloseButton={false}>
+                <form className={"flex flex-col gap-2"} onSubmit={save}>
+                    <Input
+                        value={name}
+                        onChange={(e)=>setName(e.target.value)}
+                    />
+                    <Textarea
+                        onChange={(e)=>setDescription(e.target.value)}
+                        value={description}
+                        rows={4}
+                    />
+                    <div className={"flex justify-center gap-2  items-center"}>
+                        <Button type={"submit"} >
+                            Save
+                        </Button>
+                        <Button variant={"secondary"} onClick={closeModal}>
+                            Cancel
+                        </Button>
+                    </div>
+
+                </form>
+            </Modal>
+        </>
+    )
+}
 const Dashboard = () => {
 
     const [lastInsertedCollection,setLasInsertedCollection]=useState<Collection|null>(null)
@@ -105,6 +171,7 @@ const Dashboard = () => {
 
     useEffect(()=>{
 
+
         if (editionType === "remove" && collectionUnderEdition){
             controls.askToConfirm()
         }
@@ -113,6 +180,11 @@ const Dashboard = () => {
 
     return (
         <>
+            <EditCollection
+                setCollections={collections.current.setCollections}
+                collectionUnderEdition={collectionUnderEdition}
+                setCollectionUnderEdition={setCollectionUnderEdition}
+            />
             <Confirm ref={confirm}>
                 <div className={"flex item-center gap-2 justify-center"}>
                     <Button

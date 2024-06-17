@@ -31,6 +31,7 @@ Route::group(['middleware' => 'auth:api'],function (){
         Route::post("/{id}/make-default",[CollectionController::class,"makeDefault"]);
         Route::post("store",[CollectionController::class,"store"]);
         Route::delete("/delete/{id}",[CollectionController::class,"destroy"]);
+        Route::put("/{id}/update",[CollectionController::class,"update"]);
 
     });
 });

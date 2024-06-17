@@ -51,4 +51,16 @@ class CollectionController extends ApiController
 
         return $this->responseNoContent();
     }
+
+    public function update(Request $request, int $id)
+    {
+        $request->validate([
+            "name" => "required",
+            "description" => "required"
+        ]);
+
+        Collection::whereId($id)->update($request->only(["name","description"]));
+
+        return $this->successResponse();
+    }
 }
