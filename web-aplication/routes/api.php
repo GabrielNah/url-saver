@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:api'],function (){
         Route::get("",[CollectionController::class,"index"]);
         Route::post("/{id}/make-default",[CollectionController::class,"makeDefault"]);
         Route::post("store",[CollectionController::class,"store"]);
+        Route::delete("/delete/{id}",[CollectionController::class,"destroy"]);
 
     });
 });

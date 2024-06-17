@@ -1,9 +1,7 @@
-import React, {ChangeEvent,  useRef} from 'react';
+import React, {ChangeEvent, forwardRef} from 'react';
 import classNames from "../../utils/classNames";
 
-const Toggle = ({checked,onChange,processing=false}:{checked:boolean,processing:boolean,onChange:(e:ChangeEvent<HTMLInputElement>)=>void}) => {
-
-    const toggle = useRef(null)
+const Toggle =  forwardRef((({checked,onChange,processing=false}:{checked:boolean,processing:boolean,onChange:(e:ChangeEvent<HTMLInputElement>)=>void},ref) => {
 
 
     return (
@@ -11,9 +9,9 @@ const Toggle = ({checked,onChange,processing=false}:{checked:boolean,processing:
                className={classNames("toggle" ,processing ? "!text-gray-600 !bg-sky-500" : "")}
                checked={checked}
                onChange={onChange}
-               ref={toggle}
+               {...ref && {ref}}
         />
     );
-};
+}));
 
 export default Toggle;

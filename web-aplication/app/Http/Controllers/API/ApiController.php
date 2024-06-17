@@ -19,7 +19,7 @@ abstract class ApiController extends Controller
         return $this->successResponse($data,Response::HTTP_CREATED);
     }
 
-    public function deletedResponse()
+    public function responseNoContent()
     {
         return $this->successResponse([],Response::HTTP_NO_CONTENT);
     }

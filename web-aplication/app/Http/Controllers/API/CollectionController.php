@@ -44,4 +44,11 @@ class CollectionController extends ApiController
 
         return $this->createdResponse(["collection"=> $collection]);
     }
+
+    public function destroy(int $id)
+    {
+        Collection::whereId($id)->delete();
+
+        return $this->responseNoContent();
+    }
 }

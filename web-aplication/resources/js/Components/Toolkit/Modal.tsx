@@ -1,4 +1,5 @@
 import React, {ForwardedRef, forwardRef, PropsWithChildren, Ref, useId, useImperativeHandle} from 'react';
+import Show from "./Show";
 
 
 export type Modal = {
@@ -21,11 +22,16 @@ const Modal = forwardRef(({children,withCloseButton=true}:PropsWithChildren<{wit
         <dialog ref={ref} id={id} className="modal">
             <div className="modal-box">
                 {children}
-                <div className="modal-action">
-                    <form method="dialog">
-                        <button className="btn">Close</button>
-                    </form>
-                </div>
+                <Show>
+                    <Show.When isTrue={ withCloseButton }>
+                        <div className="modal-action">
+                            <form method="dialog">
+                                <button className="btn">Close</button>
+                            </form>
+                        </div>
+                    </Show.When>
+                </Show>
+
             </div>
         </dialog>
     );

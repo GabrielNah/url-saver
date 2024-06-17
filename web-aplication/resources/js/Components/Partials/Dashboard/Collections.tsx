@@ -7,9 +7,10 @@ import Toggle from "@/Toolkit/Toggle";
 import Label from "@/Toolkit/Label";
 import Each from "@/Utils/Each";
 import {useCustomDataContext} from "../../Utils/DynamicDataContext";
+import Button from "@/Toolkit/Button";
 
 
-const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProps:{markAsDefault,setCollections}})=>{
+const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProps:{markAsDefault,setCollections,putUnderEdition,putUnderRemoval}})=>{
 
     const [isChecked,setIsChecked] = useState<boolean>(C.is_default)
     const [processing,setProcessing]=useState<boolean>(false)
@@ -40,12 +41,28 @@ const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProp
             {
                 {
                     addition:(
-                        <Label value={"Is Default"} >
-                            <Toggle checked={isChecked}
-                                    onChange={markCollectionAsDefault}
-                                    processing={processing}
-                            />
-                        </Label>
+                            <Label value={"Is Default"} >
+                                <Toggle checked={isChecked}
+                                        onChange={markCollectionAsDefault}
+                                        processing={processing}
+                                />
+                            </Label>
+                    ),
+                    footer:(
+                        <div className={"flex gap-2 items-center justify-end p-2"}>
+                            <Button
+                                variant={"primary"}
+                                onClick={()=>additionalProps.putUnderEdition(C)}
+                            >
+                                Edit
+                            </Button>
+                            <Button
+                                variant={"danger"}
+                                onClick={()=>additionalProps.putUnderRemoval(C)}
+                            >
+                                Delete
+                            </Button>
+                        </div>
                     )
                 }
             }
@@ -54,11 +71,10 @@ const CollectionCard = ({item:C,additionalProps}:{item:Collection,additionalProp
 }
 
 
-const Collections = (props) => {
+const Collections = forwardRef((props,ref) => {
 
     const [collections,setCollections]=useState<Collection[]>([])
-    const {lastInsertedCollection} = useCustomDataContext<{lastInsertedCollection:Collection|null}>()
-
+    const {lastInsertedCollection,putUnderRemoval,putUnderEdition} = useCustomDataContext<{lastInsertedCollection:Collection|null}>()
 
     const markAsDefault = (id)=>{
        return  $http.instance().post(`/collection/${id}/make-default`)
@@ -82,18 +98,23 @@ const Collections = (props) => {
     },[lastInsertedCollection])
 
 
-    return (
-        <div className={"w-full flex flex-col"}>
+    useImperativeHandle(ref,()=>{
+        return {
+            setCollections
+        }
+    },[setCollections])
 
+    return (
+        <div ref={ref} className={"w-full flex flex-col"}>
             <div className={"w-full flex flex-wrap gap-3"}>
                 <Each collection={collections}
                       template={CollectionCard}
-                      propForEachTemplate={{markAsDefault,setCollections}}
+                      propForEachTemplate={{markAsDefault,setCollections,putUnderRemoval,putUnderEdition}}
                 />
             </div>
         </div>
 
     );
-};
+});
 
 export default Collections;
